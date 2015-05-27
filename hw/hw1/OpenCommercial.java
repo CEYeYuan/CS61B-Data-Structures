@@ -1,4 +1,8 @@
-/* OpenCommercial.java */
+/* OpenCommercial.java 
+Write a program that reads a String from the keyboard.  The program should then
+construct a URL for http://www.X.com/, replacing X with the String read in, and
+print the first five lines of the Web page at that URL in REVERSE ORDER; i.e.,
+the fifth, fourth, third, second, and first lines.*/
 
 import java.net.*;
 import java.io.*;

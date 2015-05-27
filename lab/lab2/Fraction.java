@@ -34,6 +34,19 @@ class Fraction {
    *  @param n is the numerator.  Must be nonnegative.
    */
   public Fraction(int n) {
+    /*
+    Look at the implementations of the constructors.  The two-parameter constructor
+    is straightforward.  It assigns the parameters to the numerator and denominator
+    fields.  The constructor with one int parameter uses some new syntax:
+
+    this(n, 1);
+
+    The effect of this statement is to call the two-parameter constructor, passing
+    n and 1 as parameters.  "this" is a keyword in Java, which normally refers to
+    the object on which a method is invoked.  In a constructor, it can be used (as
+    above) to invoke a constructor from within another constructor.
+
+    */
     this(n, 1);
   }
 
@@ -100,6 +113,13 @@ class Fraction {
    */
   static private int gcd(int x, int y) {
     /* Replace the following line with your solution. */
+    /*
+    function gcd(a, b)
+    if b = 0
+      return a
+    else
+      return gcd(b, a mod b)
+    */
     if (y==0){
     	return x;
     }
