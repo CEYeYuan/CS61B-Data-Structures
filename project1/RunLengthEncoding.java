@@ -29,9 +29,9 @@ public class RunLengthEncoding implements Iterable {
    *  Define any variables associated with a RunLengthEncoding object here.
    *  These variables MUST be private.
    */
-
-
-
+  private DoublyLinkedList color;
+  private int width;
+  private int height;
 
   /**
    *  The following methods are required for Part II.
@@ -48,6 +48,9 @@ public class RunLengthEncoding implements Iterable {
 
   public RunLengthEncoding(int width, int height) {
     // Your solution here.
+    color=new DoublyLinkedList();
+    this.width=width;
+    this.height=height;
   }
 
   /**
@@ -74,6 +77,24 @@ public class RunLengthEncoding implements Iterable {
   public RunLengthEncoding(int width, int height, int[] red, int[] green,
                            int[] blue, int[] runLengths) {
     // Your solution here.
+    //check exception
+    if (width<0||height<0||!(red.length==blue.length&&blue.length==green.length&&green.length==runLengths.length)){
+    	System.out.println("input error");
+    	System.exit(0);
+    }
+    int total=0;
+    for (int i=0;i<runLengths.length;i++){
+    	total+=runLengths[i];
+    }
+    if (total!=width*height){
+    	System.out.println("input error");
+    	System.exit(0);
+    }
+    this.width=width;
+    this.height=height;
+    for (int i=0;i<red.length;i++){
+    	color.insertAfter(red[i],green[i],blue[i],runLengths[i]);
+    }
   }
 
   /**
@@ -85,7 +106,7 @@ public class RunLengthEncoding implements Iterable {
 
   public int getWidth() {
     // Replace the following line with your solution.
-    return 1;
+    return width;
   }
 
   /**
@@ -96,7 +117,7 @@ public class RunLengthEncoding implements Iterable {
    */
   public int getHeight() {
     // Replace the following line with your solution.
-    return 1;
+    return height;
   }
 
   /**
@@ -108,7 +129,7 @@ public class RunLengthEncoding implements Iterable {
    */
   public RunIterator iterator() {
     // Replace the following line with your solution.
-    return null;
+    return new RunIterator();
     // You'll want to construct a new RunIterator, but first you'll need to
     // write a constructor in the RunIterator class.
   }
