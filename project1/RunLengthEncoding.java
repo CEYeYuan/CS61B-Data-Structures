@@ -78,7 +78,8 @@ public class RunLengthEncoding implements Iterable {
                            int[] blue, int[] runLengths) {
     // Your solution here.
     //check exception
-    if (width<0||height<0||!(red.length==blue.length&&blue.length==green.length&&green.length==runLengths.length)){
+    if (width<0||height<0||!(red.length==blue.length&&blue.length==green.length
+    	&&green.length==runLengths.length)){
     	System.out.println("input error");
     	System.exit(0);
     }
@@ -129,7 +130,7 @@ public class RunLengthEncoding implements Iterable {
    */
   public RunIterator iterator() {
     // Replace the following line with your solution.
-    return new RunIterator();
+    return new RunIterator(color.head);
     // You'll want to construct a new RunIterator, but first you'll need to
     // write a constructor in the RunIterator class.
   }
