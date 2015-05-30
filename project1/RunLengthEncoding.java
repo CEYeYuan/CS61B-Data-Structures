@@ -160,7 +160,7 @@ public class RunLengthEncoding implements Iterable {
     	while(length!=0){
 
     		img.setPixel(x,y,(short)red,(short)green,(short)blue);
-    			System.out.println(red+" "+green+" "+blue);
+    			//System.out.println(red+" "+green+" "+blue);
     		length--;
     		if(x==width-1){
     			y++;
@@ -224,10 +224,16 @@ public class RunLengthEncoding implements Iterable {
     int blue=image.getBlue(x,y);
     int green=image.getGreen(x,y);
     while (true){
-			
-			if (y==height)
+
+			if (x==width-1){
+				y++;
+			}
+			x=(x+1)%width;
+			if (x==0&&y==height){
+				color.insertAfter(red,green,blue,length);
+				//System.out.println("\n\n\n I Got EXECUTED !");
 				break;
-			x=(x+1)%width;   
+			}
     		if(red==image.getRed(x,y)&&blue==image.getBlue(x,y)&&green==image.getGreen(x,y)){
     			length++;
     		}else{
@@ -237,8 +243,7 @@ public class RunLengthEncoding implements Iterable {
     			green=image.getGreen(x,y);
     			length=1;
     		}
-    		if (x==0)
-    			y++;
+    		
     }
 
     // at the end.
@@ -366,8 +371,8 @@ public class RunLengthEncoding implements Iterable {
 
 
 
-    System.out.println(rle1.toString());
-    //System.out.println(rle1.toPixImage().toString());
+   // System.out.println(rle1.toString());
+   // System.out.println(rle1.toPixImage().toString());
    
     doTest(image1.equals(rle1.toPixImage()),
            "image1 -> RLE1 -> image does not reconstruct the original image");
