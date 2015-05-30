@@ -145,7 +145,7 @@ public class RunLengthEncoding implements Iterable {
    */
   public PixImage toPixImage() {
     // Replace the following line with your solution.
-    RunIterator it=this.iterator();
+    RunIterator it=new RunIterator(color.head);
     int[] result=new int[4];
     PixImage img=new PixImage(width,height);
     int x=0;
@@ -154,10 +154,13 @@ public class RunLengthEncoding implements Iterable {
     	result=it.next();
     	int length=result[0];
     	int red=result[1];
+
     	int green=result[2];
     	int blue=result[3];
     	while(length!=0){
+
     		img.setPixel(x,y,(short)red,(short)green,(short)blue);
+    			System.out.println(red+" "+green+" "+blue);
     		length--;
     		if(x==width-1){
     			y++;
@@ -214,15 +217,14 @@ public class RunLengthEncoding implements Iterable {
     color=new DoublyLinkedList();
     width=image.getWidth();
     height=image.getHeight();
-    int length=0;
+    int length=1;
     int x=0;
     int y=0;
     int red=image.getRed(x,y);
     int blue=image.getBlue(x,y);
     int green=image.getGreen(x,y);
     while (true){
-			if(x==width-1)
-				y++;
+			
 			if (y==height)
 				break;
 			x=(x+1)%width;   
@@ -233,8 +235,10 @@ public class RunLengthEncoding implements Iterable {
     			red=image.getRed(x,y);
     			blue=image.getBlue(x,y);
     			green=image.getGreen(x,y);
-    			length=0;
+    			length=1;
     		}
+    		if (x==0)
+    			y++;
     }
 
     // at the end.
@@ -359,8 +363,12 @@ public class RunLengthEncoding implements Iterable {
            "RLE1 has wrong dimensions");
 
     System.out.println("Testing toPixImage() on a 3x3 encoding.");
-   // System.out.println(rle1.toString());
-    System.out.println(rle1.toPixImage().toString());
+
+
+
+    System.out.println(rle1.toString());
+    //System.out.println(rle1.toPixImage().toString());
+   
     doTest(image1.equals(rle1.toPixImage()),
            "image1 -> RLE1 -> image does not reconstruct the original image");
 

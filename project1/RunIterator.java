@@ -56,7 +56,7 @@ public class RunIterator implements Iterator {
   // the encoding.
   RunIterator(ListNode head) {
     // Your solution here.  You may add parameters to the method signature.
-    current=head;
+    current=head.next;
   }
 
   /**
@@ -67,7 +67,7 @@ public class RunIterator implements Iterator {
    */
   public boolean hasNext() {
     // Replace the following line with your solution.
-    if (current.next.color[0]==-1)
+    if (current.color[0]==-1)
       return false;
     else 
       return true;
@@ -100,12 +100,12 @@ public class RunIterator implements Iterator {
     // call to next() will return the subsequent run.
 
     // Replace the following line with your solution.
-    current=current.next;
     int[] arr=new int[4];
     arr[0]=current.color[3];
     arr[1]=current.color[0];
     arr[2]=current.color[1];
     arr[3]=current.color[2];
+    current=current.next;
     return arr;
   }
 
