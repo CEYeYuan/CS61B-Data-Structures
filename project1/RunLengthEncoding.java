@@ -147,7 +147,7 @@ public class RunLengthEncoding implements Iterable {
     // Replace the following line with your solution.
     RunIterator it=new RunIterator(color.head);
     int[] result=new int[4];
-    PixImage img=new PixImage(width,height);
+    PixImage img=new PixImage(height,width);
     int x=0;
     int y=0;
     while(it.hasNext()){
@@ -159,7 +159,7 @@ public class RunLengthEncoding implements Iterable {
     	int blue=result[3];
     	while(length!=0){
 
-    		img.setPixel(x,y,(short)red,(short)green,(short)blue);
+    		img.setPixel(y,x,(short)red,(short)green,(short)blue);
     			//System.out.println(red+" "+green+" "+blue);
     		length--;
     		if(x==width-1){
@@ -215,14 +215,14 @@ public class RunLengthEncoding implements Iterable {
   public RunLengthEncoding(PixImage image) {
     // Your solution here, but you should probably leave the following line
     color=new DoublyLinkedList();
-    width=image.getWidth();
-    height=image.getHeight();
+    height=image.getWidth();
+    width=image.getHeight();
     int length=1;
     int x=0;
     int y=0;
-    int red=image.getRed(x,y);
-    int blue=image.getBlue(x,y);
-    int green=image.getGreen(x,y);
+    int red=image.getRed(y,x);
+    int blue=image.getBlue(y,x);
+    int green=image.getGreen(y,x);
     while (true){
 
 			if (x==width-1){
@@ -234,13 +234,13 @@ public class RunLengthEncoding implements Iterable {
 				//System.out.println("\n\n\n I Got EXECUTED !");
 				break;
 			}
-    		if(red==image.getRed(x,y)&&blue==image.getBlue(x,y)&&green==image.getGreen(x,y)){
+    		if(red==image.getRed(y,x)&&blue==image.getBlue(y,x)&&green==image.getGreen(y,x)){
     			length++;
     		}else{
     			color.insertAfter(red,green,blue,length);
-    			red=image.getRed(x,y);
-    			blue=image.getBlue(x,y);
-    			green=image.getGreen(x,y);
+    			red=image.getRed(y,x);
+    			blue=image.getBlue(y,x);
+    			green=image.getGreen(y,x);
     			length=1;
     		}
     		
@@ -371,8 +371,8 @@ public class RunLengthEncoding implements Iterable {
 
 
 
-   // System.out.println(rle1.toString());
-   // System.out.println(rle1.toPixImage().toString());
+   System.out.println(rle1.toString());
+    System.out.println(rle1.toPixImage().toString());
    
     doTest(image1.equals(rle1.toPixImage()),
            "image1 -> RLE1 -> image does not reconstruct the original image");

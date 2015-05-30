@@ -35,7 +35,7 @@ public class PixImage {
    */
   public PixImage(int width, int height) {
     // Your solution here.
-    image=new int[height][width][3];
+    image=new int[width][height][3];
     wid=width;
     hei=height;
   }
@@ -69,7 +69,7 @@ public class PixImage {
    */
   public short getRed(int x, int y) {
     // Replace the following line with your solution.
-    return (short)image[y][x][0];
+    return (short)image[x][y][0];
   }
 
   /**
@@ -81,7 +81,7 @@ public class PixImage {
    */
   public short getGreen(int x, int y) {
     // Replace the following line with your solution.
-    return (short)image[y][x][1];
+    return (short)image[x][y][1];
   }
 
   /**
@@ -93,7 +93,7 @@ public class PixImage {
    */
   public short getBlue(int x, int y) {
     // Replace the following line with your solution.
-    return (short)image[y][x][2];
+    return (short)image[x][y][2];
   }
 
   /**
@@ -111,9 +111,9 @@ public class PixImage {
    */
   public void setPixel(int x, int y, short red, short green, short blue) {
     // Your solution here.
-    image[y][x][0]=red;
-    image[y][x][1]=green;
-    image[y][x][2]=blue;
+    image[x][y][0]=red;
+    image[x][y][1]=green;
+    image[x][y][2]=blue;
   }
 
   /**
@@ -128,8 +128,8 @@ public class PixImage {
   public String toString() {
     // Replace the following line with your solution.
     String s="";
-    for(int i=0;i<hei;i++){
-    	for(int j=0;j<wid;j++){
+    for(int i=0;i<wid;i++){
+    	for(int j=0;j<hei;j++){
     		for (int k=0;k<3;k++){
     			s=s+" "+image[i][j][k];
     		}
