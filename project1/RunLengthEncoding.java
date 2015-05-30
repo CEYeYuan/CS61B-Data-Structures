@@ -147,7 +147,7 @@ public class RunLengthEncoding implements Iterable {
     // Replace the following line with your solution.
     RunIterator it=new RunIterator(color.head);
     int[] result=new int[4];
-    PixImage img=new PixImage(height,width);
+    PixImage img=new PixImage(width,height);
     int x=0;
     int y=0;
     while(it.hasNext()){
@@ -159,7 +159,7 @@ public class RunLengthEncoding implements Iterable {
     	int blue=result[3];
     	while(length!=0){
 
-    		img.setPixel(y,x,(short)red,(short)green,(short)blue);
+    		img.setPixel(x,y,(short)red,(short)green,(short)blue);
     			//System.out.println(red+" "+green+" "+blue);
     		length--;
     		if(x==width-1){
@@ -191,7 +191,8 @@ public class RunLengthEncoding implements Iterable {
     	if (current.color[0]==-1){
     		break;
     	}
-    	buffer.append(current.color[0]+"/"+current.color[1]+"/"+current.color[2]+"/"+current.color[3]+" \n ");
+    	buffer.append(current.color[0]+"/"+current.color[1]+"/"+current.color[2]+"/"
+    		+current.color[3]+" \n ");
     	current=current.next;
     }
     String str=buffer.toString();
@@ -215,14 +216,14 @@ public class RunLengthEncoding implements Iterable {
   public RunLengthEncoding(PixImage image) {
     // Your solution here, but you should probably leave the following line
     color=new DoublyLinkedList();
-    height=image.getWidth();
-    width=image.getHeight();
+    width=image.getWidth();
+    height=image.getHeight();
     int length=1;
     int x=0;
     int y=0;
-    int red=image.getRed(y,x);
-    int blue=image.getBlue(y,x);
-    int green=image.getGreen(y,x);
+    int red=image.getRed(x,y);
+    int blue=image.getBlue(x,y);
+    int green=image.getGreen(x,y);
     while (true){
 
 			if (x==width-1){
@@ -234,13 +235,13 @@ public class RunLengthEncoding implements Iterable {
 				//System.out.println("\n\n\n I Got EXECUTED !");
 				break;
 			}
-    		if(red==image.getRed(y,x)&&blue==image.getBlue(y,x)&&green==image.getGreen(y,x)){
+    		if(red==image.getRed(x,y)&&blue==image.getBlue(x,y)&&green==image.getGreen(x,y)){
     			length++;
     		}else{
     			color.insertAfter(red,green,blue,length);
-    			red=image.getRed(y,x);
-    			blue=image.getBlue(y,x);
-    			green=image.getGreen(y,x);
+    			red=image.getRed(x,y);
+    			blue=image.getBlue(x,y);
+    			green=image.getGreen(x,y);
     			length=1;
     		}
     		
@@ -257,6 +258,57 @@ public class RunLengthEncoding implements Iterable {
    */
   public void check() {
     // Your solution here.
+    RunIterator it=new RunIterator(this.color.head);
+    int total_length=0;
+    int [] tmp=new int[4];
+    if (it.hasNext()){
+
+    	tmp=it.next();
+    	total_length+=tmp[0];
+    	//####case 1; only one element
+    	if (!it.hasNext()){
+    		if (total_length==width*height)
+    			System.out.println("We're all good!");
+    		else 
+    			System.out.println("Error: Original image and recovered don't have the same amount of pixels ! ");
+    	}
+
+    	//####case 2; at least two element
+    	else{
+    		int[] current=new int[4];
+    		current=it.next();
+    		total_length+=current[0];
+    		boolean tf=true;
+    		while(true){
+    			if (tmp[1]==current[1]&&tmp[2]==current[2]&&tmp[3]==current[3]){
+    				tf=false;
+    				System.out.println("Error: The consecutive pixels should be compressed");
+    				break;	
+    			}
+    			else{
+    				if (it.hasNext()){	
+    					tmp=current;
+    					current=it.next();
+    					total_length+=current[0];
+    				}else{
+    					break;
+    				}
+    			}
+    		}
+    		if (tf){
+    			if (total_length==width*height)
+    				System.out.println("We're all good!");
+    			else 
+    				System.out.println("Error: Original image and recovered don't have the same amount of pixels ! ");		
+    		}
+    	}
+
+
+
+    }
+    else{
+    	System.out.println("Error: No data found");
+    }
   }
 
 
