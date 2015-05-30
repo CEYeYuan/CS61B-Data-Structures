@@ -101,7 +101,12 @@ public class RunIterator implements Iterator {
 
     // Replace the following line with your solution.
     current=current.next;
-    return current.color;
+    int[] arr=new int[4];
+    arr[0]=current.color[3];
+    arr[1]=current.color[0];
+    arr[2]=current.color[1];
+    arr[3]=current.color[2];
+    return arr;
   }
 
   /**

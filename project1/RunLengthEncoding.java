@@ -91,6 +91,7 @@ public class RunLengthEncoding implements Iterable {
     	System.out.println("input error");
     	System.exit(0);
     }
+    color =new DoublyLinkedList();
     this.width=width;
     this.height=height;
     for (int i=0;i<red.length;i++){
@@ -107,6 +108,7 @@ public class RunLengthEncoding implements Iterable {
 
   public int getWidth() {
     // Replace the following line with your solution.
+  	
     return width;
   }
 
@@ -143,7 +145,30 @@ public class RunLengthEncoding implements Iterable {
    */
   public PixImage toPixImage() {
     // Replace the following line with your solution.
-    return new PixImage(1, 1);
+    RunIterator it=this.iterator();
+    int[] result=new int[4];
+    PixImage img=new PixImage(width,height);
+    int x=0;
+    int y=0;
+    while(it.hasNext()){
+    	result=it.next();
+    	int length=result[0];
+    	int red=result[1];
+    	int green=result[2];
+    	int blue=result[3];
+    	while(length!=0){
+    		img.setPixel(x,y,(short)red,(short)green,(short)blue);
+    		length--;
+    		if(x==width-1){
+    			y++;
+    			x=0;
+    		}
+    		else
+    			x++;
+    	}
+
+    }
+    return img;
   }
 
   /**
@@ -157,7 +182,17 @@ public class RunLengthEncoding implements Iterable {
    */
   public String toString() {
     // Replace the following line with your solution.
-    return "";
+    StringBuffer buffer=new StringBuffer();
+    ListNode current=color.head.next;
+    while(true){
+    	if (current.color[0]==-1){
+    		break;
+    	}
+    	buffer.append(current.color[0]+"/"+current.color[1]+"/"+current.color[2]+"/"+current.color[3]+" \n ");
+    	current=current.next;
+    }
+    String str=buffer.toString();
+    return str;
   }
 
 
@@ -176,6 +211,32 @@ public class RunLengthEncoding implements Iterable {
    */
   public RunLengthEncoding(PixImage image) {
     // Your solution here, but you should probably leave the following line
+    color=new DoublyLinkedList();
+    width=image.getWidth();
+    height=image.getHeight();
+    int length=0;
+    int x=0;
+    int y=0;
+    int red=image.getRed(x,y);
+    int blue=image.getBlue(x,y);
+    int green=image.getGreen(x,y);
+    while (true){
+			if(x==width-1)
+				y++;
+			if (y==height)
+				break;
+			x=(x+1)%width;   
+    		if(red==image.getRed(x,y)&&blue==image.getBlue(x,y)&&green==image.getGreen(x,y)){
+    			length++;
+    		}else{
+    			color.insertAfter(red,green,blue,length);
+    			red=image.getRed(x,y);
+    			blue=image.getBlue(x,y);
+    			green=image.getGreen(x,y);
+    			length=0;
+    		}
+    }
+
     // at the end.
     check();
   }
@@ -210,6 +271,7 @@ public class RunLengthEncoding implements Iterable {
   public void setPixel(int x, int y, short red, short green, short blue) {
     // Your solution here, but you should probably leave the following line
     //   at the end.
+   // PixImage.setPixel(x,y,red,green,blue);
     check();
   }
 
@@ -297,6 +359,8 @@ public class RunLengthEncoding implements Iterable {
            "RLE1 has wrong dimensions");
 
     System.out.println("Testing toPixImage() on a 3x3 encoding.");
+   // System.out.println(rle1.toString());
+    System.out.println(rle1.toPixImage().toString());
     doTest(image1.equals(rle1.toPixImage()),
            "image1 -> RLE1 -> image does not reconstruct the original image");
 
