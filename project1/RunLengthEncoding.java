@@ -333,6 +333,46 @@ public class RunLengthEncoding implements Iterable {
     // Your solution here, but you should probably leave the following line
     //   at the end.
    // PixImage.setPixel(x,y,red,green,blue);
+  	ListNode tmp=color.head.next;
+    int index=width*y+x+1;
+    while (tmp.toIndex<index){
+        tmp=tmp.next;
+    }
+    int[] arr=tmp.color;
+    if (arr[0]==red&&arr[1]==green&&arr[2]==blue){
+    	//if the color is the same as the current color; simply do nothing
+    }
+    else{
+    	if (tmp.toIndex==index){//this is the last pixel 
+    		int[] next=tmp.next.color;
+    		if (next[0]==red&&next[1]==green&&next[2]==blue){
+    		//see if can be merged with next listnode
+    			tmp.toIndex--;
+    			arr[3]=arr[3]-1;
+    			next[3]=next[3]+1;
+    		}else{
+    			//this is the last pixel and it's not the same as next listnode
+    			ListNode newNode=new ListNode(red,green,blue,1);
+    			tmp.toIndex--;
+    			arr[3]=arr[3]-1;
+    			newNode.toIndex=tmp.toIndex+1;
+    			newNode.next=tmp.next;
+    			tmp.next=newNode;
+    		}
+    	}else{
+    		//if it's inside one listNode
+    		ListNode newNode=new ListNode(red,green,blue,1);
+    		ListNode secondHalf=new ListNode(tmp.color[0],tmp.color[1],tmp.color[2],tmp.toIndex-index);
+    		secondHalf.toIndex=tmp.toIndex;
+    		newNode.toIndex=index;
+    		tmp.toIndex=index-1;
+    		tmp.next=newNode;
+    		newNode.next=secondHalf;
+
+    	}
+
+
+	}
     check();
   }
 
@@ -423,8 +463,8 @@ public class RunLengthEncoding implements Iterable {
 
 
 
-   System.out.println(rle1.toString());
-    System.out.println(rle1.toPixImage().toString());
+  	// System.out.println(rle1.toString());
+    //System.out.println(rle1.toPixImage().toString());
    
     doTest(image1.equals(rle1.toPixImage()),
            "image1 -> RLE1 -> image does not reconstruct the original image");
