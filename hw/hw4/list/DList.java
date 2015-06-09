@@ -1,4 +1,11 @@
-/* DList.java */
+/* DList.java 
+########
+!!!!!!! ATTENTION:
+when we create a new node, we not only need to set that node's prev/next node 
+properly, but also need modify all the nodes' prev/next reference potentially get
+affected
+
+*/
 
 package list;
 
@@ -52,15 +59,12 @@ public class DList {
    */
   public DList() {
     //  Your solution here.
-    size=0;
-    head=new DListNode(null,head,head);
-    if (head.prev==head){
-      System.out.println("By calling the constructor we will set the previous and next automaticlly");
-    }
-    else{
-      System.out.println("By calling the constructor we will NOT set the previous and next automaticlly");
-    
-    }
+    head=newNode(null,head,head);
+    //##########  !!!!!!!!!
+    /*Why we need these lines of code ?
+    when we say newNode(null,head,head), at that time, head is not initialized, it's 
+    evaluated to null; so we are creating an node whose prev and next are both null;
+    then we assign this node to head*/
     head.prev=head;
     head.next=head;
   }
@@ -90,9 +94,10 @@ public class DList {
    */
   public void insertFront(Object item) {
     // Your solution here.
-       head.next.prev=newNode(item,head,head.next);
-       head.next=head.next.prev;
-       size++; 
+    DListNode node=newNode(item,head,head.next);
+    head.next.prev=node;
+    head.next=node;
+    size++;
   }
 
   /**
@@ -102,9 +107,11 @@ public class DList {
    */
   public void insertBack(Object item) {
     // Your solution here.
-       head.prev.next=newNode(item,head.prev,head);
-       head.prev=head.prev.next;
-       size++; 
+    DListNode node=newNode(item,head.prev,head);
+    head.prev.next=node;
+    head.prev=node;
+    
+    size++;
   }
 
   /**
@@ -118,9 +125,8 @@ public class DList {
    */
   public DListNode front() {
     // Your solution here.
-    if (size==0){
+    if(head.next==head)
       return null;
-    }
     else{
       return head.next;
     }
@@ -137,9 +143,8 @@ public class DList {
    */
   public DListNode back() {
     // Your solution here.
-    if (size==0){
+    if(head.next==head)
       return null;
-    }
     else{
       return head.prev;
     }
@@ -157,9 +162,8 @@ public class DList {
    */
   public DListNode next(DListNode node) {
     // Your solution here.
-    if (node==null || node.next==head){
+    if (node==null||node.next==head)
       return null;
-    }
     else{
       return node.next;
     }
@@ -177,9 +181,8 @@ public class DList {
    */
   public DListNode prev(DListNode node) {
     // Your solution here.
-    if (node==null ||node.prev==head){
+    if (node==null||node.prev==head)
       return null;
-    }
     else{
       return node.prev;
     }
@@ -194,14 +197,14 @@ public class DList {
    */
   public void insertAfter(Object item, DListNode node) {
     // Your solution here.
-    if (node==null){
+    if(node==null)
       return;
-    }
     else{
-      node.next.prev=newNode(item,node,node.next); 
-      node.next= node.next.prev;
+      DListNode insert=newNode(item,node,node.next);
+      node.next.prev=insert;
+      node.next=insert;
       size++;
-   }
+    }
   }
 
   /**
@@ -213,15 +216,14 @@ public class DList {
    */
   public void insertBefore(Object item, DListNode node) {
     // Your solution here.
-    if (node==null){
+    if(node==null)
       return;
-    }
     else{
-      node.prev.next=newNode(item,node.prev,node);
-      node.prev=node.prev.next;
+      DListNode insert=newNode(item,node.prev,node);
+      node.prev.next=insert;
+      node.prev=insert;
       size++;
     }
-
   }
 
   /**
@@ -230,9 +232,8 @@ public class DList {
    */
   public void remove(DListNode node) {
     // Your solution here.
-    if (node==null ||size==0){
+    if(node==null)
       return;
-    }
     else{
       node.prev.next=node.next;
       node.next.prev=node.prev;
@@ -252,34 +253,12 @@ public class DList {
     String result = "[  ";
     DListNode current = head.next;
     while (current != head) {
-      result = result + current.item + "  ";
+      Object tmp=current.item;
+      result = result + tmp + "  ";
       current = current.next;
     }
-    return result + "]"+"the size is"+size;
+    return result + "]";
   }
 
-   public static void main(String[] args) {
-    // DO NOT CHANGE THE FOLLOWING CODE.
-
-    DList l = new DList();
-    System.out.println(l.toString());
-    l.insertFront(3);
-    System.out.println(l.toString());
-    l.insertFront(2);
-    System.out.println(l.toString());
-    l.insertFront(1);
-    System.out.println(l.toString());
-    l.insertBack(4);
-    System.out.println(l.toString());
-    System.out.println("front is "+l.front().item+"back is"+ l.back().item);
-    l.remove(l.front());
-    System.out.println(l.toString());
- //   l.lockNode(l.front());
-    if (l.front()instanceof LockDListNode)
-      System.out.println("We made it!");
-    else
-      System.out.println("We failed");
-    l.remove(l.front());
-    System.out.println(l.toString());
-  }
+  
 }
