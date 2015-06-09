@@ -34,6 +34,22 @@ public class BankApp {
 	} 
 	//System.err.println(e);
       }
+       catch(BadTransactionException tr){
+      	System.err.println(tr);
+      	while(true){
+      		try{
+      		bankApp.doWithdraw();
+      		break;
+      		}catch (BadTransactionException t){
+      			System.err.println(t);
+      		}
+      		catch (Exception e){
+      			System.err.println(e);
+      		}
+      	}
+      	
+      	
+      }
      catch(BadAccountException bd){
 		System.err.println(bd);
       } catch(IOException e) {}
@@ -67,7 +83,7 @@ public class BankApp {
   *  deposit transaction on that account. 
   *  @exception IOException if there are problems reading user input.
   */
-  private void doDeposit() throws IOException,BadAccountException{
+  private void doDeposit() throws IOException,BadAccountException,BadTransactionException{
     // Get account number.
     int acctNumber = readInt("Enter account number: ");
     int amount = readInt("Enter amount to deposit: ");
@@ -82,7 +98,7 @@ public class BankApp {
    *  to perform a withdrawal transaction from that account.
    *  @exception IOException if there are problems reading user input.
    */
-  private void doWithdraw() throws IOException,BadAccountException {
+  private void doWithdraw() throws IOException,BadAccountException,BadTransactionException {
     // Get account number.
     int acctNumber = readInt("Enter account number: ");
     int amount = readInt("Enter amount to withdraw: ");
