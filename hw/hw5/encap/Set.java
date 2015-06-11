@@ -1,6 +1,7 @@
 /* Set.java */
 
 import list.*;
+//import java.util.*;
 
 /**
  *  A Set is a collection of Comparable elements stored in sorted order.
@@ -8,6 +9,7 @@ import list.*;
  **/
 public class Set {
   /* Fill in the data fields here. */
+  List set;
 
   /**
    * Set ADT invariants:
@@ -24,6 +26,7 @@ public class Set {
    **/
   public Set() { 
     // Your solution here.
+    set=new SList();
   }
 
   /**
@@ -33,7 +36,7 @@ public class Set {
    **/
   public int cardinality() {
     // Replace the following line with your solution.
-    return 0;
+    return set.length();
   }
 
   /**
@@ -46,6 +49,24 @@ public class Set {
    **/
   public void insert(Comparable c) {
     // Your solution here.
+    try{
+    	if (set.length()==0)
+    		set.insertFront(c);
+    	ListNode head=set.front(); 
+    	while(true){
+    		if (c.compareTo(head.item())==0)
+    			return;
+    		else if(c.compareTo(head.item())>0)
+    			head=head.next();
+   		 	else{
+    			head.insertBefore(c);
+    			return;
+    		}
+    	}
+    }catch(InvalidNodeException i){
+    	System.err.println(i);
+    }
+    
   }
 
   /**
