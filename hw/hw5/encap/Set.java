@@ -50,21 +50,32 @@ public class Set {
   public void insert(Comparable c) {
     // Your solution here.
     try{
-    	if (set.length()==0)
+    	if (set.length()==0){
     		set.insertFront(c);
+        return ;
+      }
+      boolean inserted=false;
     	ListNode head=set.front(); 
     	while(true){
     		if (c.compareTo(head.item())==0)
     			return;
-    		else if(c.compareTo(head.item())>0)
-    			head=head.next();
+    		else if(c.compareTo(head.item())>0){
+          if(head.next().isValidNode())
+    			 head=head.next();
+          else
+            break;
+        }
    		 	else{
     			head.insertBefore(c);
+          inserted=true;
     			return;
     		}
     	}
+      if(!inserted){
+        head.insertAfter(c);
+      }
     }catch(InvalidNodeException i){
-    	System.err.println(i);
+    	i.printStackTrace();
     }
     
   }
@@ -86,6 +97,45 @@ public class Set {
    **/
   public void union(Set s) {
     // Your solution here.
+    ListNode a=set.front();
+    ListNode b=s.set.front();
+    try{
+      while(a.next().isValidNode()&&(b.next().isValidNode())){
+     
+          if(((Comparable)a.item()).compareTo(b.item())<0&&((Comparable)a.next().item()).compareTo(b.item())<0){
+            a=a.next();
+          }
+         else if(((Comparable)a.item()).compareTo(b.item())<0&&((Comparable)a.next().item()).compareTo(b.item())>0){
+            a.insertAfter(b.item());
+            b=b.next();
+            a=a.next();
+          }
+          else if(((Comparable)a.item()).compareTo(b.item())<0&&((Comparable)a.next().item()).compareTo(b.item())==0){
+            b=b.next();
+            a=a.next();
+          }else{
+            if(((Comparable)a.item()).compareTo(b.item())==0){
+               b=b.next();
+                a=a.next();
+            }else{
+              a.insertBefore(b.item());
+              b=b.next();
+            }
+          }
+      }
+      
+      if(!a.next().isValidNode()){
+        while(b.isValidNode()&&((Comparable)a.item()).compareTo(b.item())<0){
+          a.insertAfter(b.item());
+          b=b.next();
+          a=a.next();
+        }
+      }
+
+    }
+    catch (InvalidNodeException invalid){
+      invalid.printStackTrace();
+    }
   }
 
   /**
@@ -103,6 +153,34 @@ public class Set {
    **/
   public void intersect(Set s) {
     // Your solution here.
+    ListNode a=set.front();
+    ListNode b=s.set.front();
+    ListNode current;
+    try{
+      while(a.isValidNode()){
+        if(b.isValidNode()){
+          if(((Comparable)a.item()).compareTo(b.item())>0){
+            b=b.next();
+          }else{
+            if(((Comparable)a.item()).compareTo(b.item())==0){
+            b=b.next();
+            a=a.next();
+            }else{
+              current=a.next();
+              a.remove();
+              a=current;  
+            }
+          }
+        }else{
+          current=a.next();
+          a.remove();
+          a=current;
+        }
+      }
+
+    }catch (InvalidNodeException i){
+      i.printStackTrace();
+    }
   }
 
   /**
@@ -122,7 +200,19 @@ public class Set {
    **/
   public String toString() {
     // Replace the following line with your solution.
-    return "";
+    ListNode head=set.front();
+    String s="[";
+    try{
+      while(head.isValidNode()){
+      s=s+head.item()+" ";
+      head=head.next();
+      }
+      s=s+"]";  
+    }catch(InvalidNodeException i){
+      i.printStackTrace();
+    }
+    
+    return s;
   }
 
   public static void main(String[] argv) {
@@ -130,12 +220,18 @@ public class Set {
     s.insert(new Integer(3));
     s.insert(new Integer(4));
     s.insert(new Integer(3));
+    s.insert(new Integer(5));
+    s.insert(new Integer(10));
     System.out.println("Set s = " + s);
 
     Set s2 = new Set();
-    s2.insert(new Integer(4));
+    s2.insert(new Integer(1));
+    s2.insert(new Integer(2));
     s2.insert(new Integer(5));
-    s2.insert(new Integer(5));
+    s2.insert(new Integer(6));
+    s2.insert(new Integer(7));
+    s2.insert(new Integer(10));
+    s2.insert(new Integer(12));
     System.out.println("Set s2 = " + s2);
 
     Set s3 = new Set();
