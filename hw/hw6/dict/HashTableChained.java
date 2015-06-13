@@ -14,80 +14,69 @@ package dict;
  *  DO NOT CHANGE ANY PROTOTYPES IN THIS FILE.
  **/
 
-
-class ListNode extends Entry{
-  ListNode next;
-  ListNode prev;
-  ListNode(){
-    key=null;
-    value=null;
-    next=null;
-    prev=null;
-  }
-  ListNode(Object k,Object v){
-    key=k;
-    value=v;
-    next=null;
-    prev=null;
-  }
-  ListNode insertNode(Object k,Object v){
-     ListNode node=next;
-      while(node!=null){
-        node=node.next;
-      }
-     
-      node.next=new ListNode(k,v);
-      node.next.prev=this;
-      return node.next;
-
-    
-  }
-}
-
 public class HashTableChained implements Dictionary {
 
   /**
    *  Place any data fields here.
    **/
-     ListNode [] hashtable;
-     int size;
 
+  ListNode[] dict;
+  int size;
+  int buckets;
+  int collision;
 
 
   /** 
    *  Construct a new empty hash table intended to hold roughly sizeEstimate
    *  entries.  (The precise number of buckets is up to you, but we recommend
-   *  you use a prime number, and shoot for a load factor between 0.5 and 1.)
+   *  you use a prime numoer, and shoot for a load factor between 0.5 and 1.)
    **/
-
-  public boolean isPrime(int i){
-    if (i<2){
-      return false;
-    }
-    else{
-      for (int j=2;j<=i/2;j++){
-        if (i%j==0){
-          return false;
-        }
-      }
-    return true;
-    }
+  public int numOfCollision(){
+    return collision;
   }
-
   public HashTableChained(int sizeEstimate) {
     // Your solution here.
-    int min,max,sizeUsed;
-    min=sizeEstimate;
-    max=2*sizeEstimate;
-    sizeUsed=sizeEstimate;
-    for (int i=min;i<=max;i++){
-      if (isPrime(i)){
-        sizeUsed=i;
-        break;
-      }
-    }
-    hashtable=new ListNode [sizeUsed];
-    size=sizeUsed;
+    buckets=prime(sizeEstimate);
+    dict=new ListNode[buckets];
+  }
+
+private static int prime(int input){
+  	boolean[] arr=new boolean[input+1];
+  	for (int i=0;i<arr.length;i++){
+  		arr[i]=true;
+  	}
+  	for (int i=2;i<=Math.sqrt(2*input);i++){
+  		for(int j=(input/i)*i;j<=2*input;j+=i){
+  			if(j>=input&&j<=2*input){
+  				arr[j-input]=false;
+  				//System.out.print("Executed");
+  			}
+  		}
+  	}
+  	for(int k=0;k<arr.length;k++){
+  		if(arr[k]==true){
+  			System.out.print(k+input+" ");
+  		}
+  	}
+  	System.out.print('\n');
+
+  	return best(arr,input);
+  }
+
+  private static int best(boolean[] input,int offset){
+  	int low=input.length/2;
+  	int high=input.length/2;
+  	for(int i=0;i<=input.length/2;i++){
+  		if(input[low])
+  			return offset+low;
+  		else if(input[high])
+  			return offset+high;
+  		else{
+  			low--;
+  			high++;
+  		}
+  	}
+  	return -1;
   }
 
   /** 
@@ -97,8 +86,8 @@ public class HashTableChained implements Dictionary {
 
   public HashTableChained() {
     // Your solution here.
-    hashtable=new ListNode[101];
-    size=101;
+    buckets=prime(75);
+    dict=new ListNode[buckets];
   }
 
   /**
@@ -111,7 +100,9 @@ public class HashTableChained implements Dictionary {
 
   int compFunction(int code) {
     // Replace the following line with your solution.
-    return (code-Integer.MIN_VALUE)*(Integer.MAX_VALUE-Integer.MIN_VALUE)*(size-1);
+  	int result=Math.abs(code*17+191)%prime(10000);
+  	result=Math.abs(result)%buckets;
+  	return result;
   }
 
   /** 
@@ -134,7 +125,7 @@ public class HashTableChained implements Dictionary {
 
   public boolean isEmpty() {
     // Replace the following line with your solution.
-    return (size<=0);
+    return size==0;
   }
 
   /**
@@ -152,18 +143,21 @@ public class HashTableChained implements Dictionary {
 
   public Entry insert(Object key, Object value) {
     // Replace the following line with your solution.
-    if (hashtable[compFunction(key.hashCode())]==null){
-      hashtable[compFunction(key.hashCode())].key=key;
-      hashtable[compFunction(key.hashCode())].value=value;
-      hashtable[compFunction(key.hashCode())].next=null;
-      hashtable[compFunction(key.hashCode())].prev=null;
-      return hashtable[compFunction(key.hashCode())];
-    }
-    else{
-      ListNode node=hashtable[compFunction(key.hashCode())].insertNode(key,value);
-      return node;
-    }
+    Entry e=new Entry(key,value);
     size++;
+    int index=compFunction(key.hashCode());
+    if(dict[index]==null){
+    	dict[index]=new ListNode(e);
+    }else{
+      collision++;
+    	ListNode node=dict[index];
+    	while(node.next!=null){
+    		node=node.next;
+    	}
+    	
+    	node.next=new ListNode(e);
+    }
+    return e;
   }
 
   /** 
@@ -180,14 +174,18 @@ public class HashTableChained implements Dictionary {
 
   public Entry find(Object key) {
     // Replace the following line with your solution.
-    ListNode node=hashtable[compFunction(key.hashCode())];
-    while(node!=null){
-      if (node.key==key){
-        return node;
-      }
-      node=node.next;
+     int index=compFunction(key.hashCode());
+    if(dict[index]==null){return null;}
+    else{
+    	ListNode node=dict[index];
+    	while(node!=null){
+    		if(node.item.key().equals(key))
+    			return node.item;
+    		else
+    			node=node.next;
+    	}
+    	return null;
     }
-    return null;
   }
 
   /** 
@@ -205,15 +203,26 @@ public class HashTableChained implements Dictionary {
 
   public Entry remove(Object key) {
     // Replace the following line with your solution.
-     ListNode node=find(key);
-     if (node==null){
-      return;
-     }
-     else{
-      ListNode node=hashtable[compFunction(key.hashCode())];
-
-
-     }
+    int index=compFunction(key.hashCode());
+    if(dict[index]==null){return null;}
+    else{
+    	ListNode node=dict[index];
+    	while(node!=null){
+    		if(node.item.key().equals(key)){
+    			ListNode current=node;
+    			ListNode head=dict[index];
+    			while(head.next!=current){
+    				head=head.next;
+    			}
+    			head.next=head.next.next;
+    			size--;
+    			return current.item;
+    		}
+    		else
+    			node=node.next;
+    	}
+    	return null;
+    }
   }
 
   /**
@@ -221,6 +230,8 @@ public class HashTableChained implements Dictionary {
    */
   public void makeEmpty() {
     // Your solution here.
+    size=0;
+    dict=new ListNode[buckets];
   }
 
 }

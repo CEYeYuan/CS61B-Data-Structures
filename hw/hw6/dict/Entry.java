@@ -14,6 +14,11 @@ public class Entry {
   protected Object key;
   protected Object value;
 
+  public Entry(Object a,Object b){
+  	key=a;
+  	value=b;
+  }
+
   public Object key() {
     return key;
   }

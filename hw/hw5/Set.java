@@ -1,6 +1,7 @@
 /* Set.java */
 
 import list.*;
+//import java.util.*;
 
 /**
  *  A Set is a collection of Comparable elements stored in sorted order.
@@ -8,7 +9,8 @@ import list.*;
  **/
 public class Set {
   /* Fill in the data fields here. */
-   List setlist;
+  List set;
+
   /**
    * Set ADT invariants:
    *  1)  The Set's elements must be precisely the elements of the List.
@@ -24,7 +26,7 @@ public class Set {
    **/
   public Set() { 
     // Your solution here.
-    setlist=new SList();
+    set=new DList();
   }
 
   /**
@@ -34,7 +36,7 @@ public class Set {
    **/
   public int cardinality() {
     // Replace the following line with your solution.
-    return setlist.length();
+    return set.length();
   }
 
   /**
@@ -47,37 +49,35 @@ public class Set {
    **/
   public void insert(Comparable c) {
     // Your solution here.
-    ListNode l=setlist.front();
-    if (!l.isValidNode()){
-      setlist.insertFront(c);
-    }
-    else{
-     
-        if(((Comparable)(l.item())).compareTo(c)>0){
-         setlist.insertFront(c);
-         return;
+    try{
+    	if (set.length()==0){
+    		set.insertFront(c);
+        return ;
       }
-        else if (((Comparable)(l.item())).compareTo(c)==0){
-         return;
+      boolean inserted=false;
+    	ListNode head=set.front(); 
+    	while(true){
+    		if (c.compareTo(head.item())==0)
+    			return;
+    		else if(c.compareTo(head.item())>0){
+          if(head.next().isValidNode())
+    			 head=head.next();
+          else
+            break;
+        }
+   		 	else{
+    			head.insertBefore(c);
+          inserted=true;
+    			return;
+    		}
+    	}
+      if(!inserted){
+        head.insertAfter(c);
       }
-
-        else{
-          while(true){
-            if (((Comparable)(l.next().item())).compareTo(c)>0||l.next().item()==null){
-            l.insertAfter(c);
-             return;
-            }
-            else if (((Comparable)(l.next().item())).compareTo(c)==0){
-  return;
-}
-         l=l.next();
-          }
-          
-          }
-      
- 
+    }catch(InvalidNodeException i){
+    	i.printStackTrace();
     }
-   
+    
   }
 
   /**
@@ -97,45 +97,46 @@ public class Set {
    **/
   public void union(Set s) {
     // Your solution here.
+    ListNode a=set.front();
+    ListNode b=s.set.front();
     try{
-   
-    ListNode n1=this.setlist.front();
-    ListNode n2=s.setlist.front();
-    while (n1.isValidNode()&&n2.isValidNode()){
-
-      if (((Comparable)(n2.item())).compareTo((Comparable)(n1.item()))<0){
-        setlist.insertFront(n2.item());
-        n1=setlist.front();
-        n2=n2.next();
+      while(a.next().isValidNode()&&(b.next().isValidNode())){
+     
+          if(((Comparable)a.item()).compareTo(b.item())<0&&((Comparable)a.next().item()).compareTo(b.item())<0){
+            a=a.next();
+          }
+         else if(((Comparable)a.item()).compareTo(b.item())<0&&((Comparable)a.next().item()).compareTo(b.item())>0){
+            a.insertAfter(b.item());
+            b=b.next();
+            a=a.next();
+          }
+          else if(((Comparable)a.item()).compareTo(b.item())<0&&((Comparable)a.next().item()).compareTo(b.item())==0){
+            b=b.next();
+            a=a.next();
+          }else{
+            if(((Comparable)a.item()).compareTo(b.item())==0){
+               b=b.next();
+                a=a.next();
+            }else{
+              a.insertBefore(b.item());
+              b=b.next();
+            }
+          }
       }
-      else
-      { if (((Comparable)(n2.item())).compareTo((Comparable)(n1.item()))>0){
-          if (((Comparable)(n2.item())).compareTo((Comparable)(n1.next().item()))<0||n1.next().isValidNode()==false){
-            n1.insertAfter(n2.item());
-            n1=n1.next();
-            n2=n2.next();
-          }
-          else if (((Comparable)(n2.item())).compareTo((Comparable)(n1.next().item()))==0){
-            n2=n2.next();
-          }
-
-          else{
-            n1=n1.next();
-          }
-
-        }
-        else{
-          n2=n2.next();
-        }
-
-        }
-      }
-    }
-    catch(InvalidNodeException ivn){
       
+      if(!a.next().isValidNode()){
+        while(b.isValidNode()&&((Comparable)a.item()).compareTo(b.item())<0){
+          a.insertAfter(b.item());
+          b=b.next();
+          a=a.next();
+        }
+      }
+
     }
+    catch (InvalidNodeException invalid){
+      invalid.printStackTrace();
     }
-  
+  }
 
   /**
    *  intersect() modifies this Set so that it contains the intersection of
@@ -152,28 +153,33 @@ public class Set {
    **/
   public void intersect(Set s) {
     // Your solution here.
+    ListNode a=set.front();
+    ListNode b=s.set.front();
+    ListNode current;
     try{
-      ListNode n1=this.setlist.front();
-      ListNode n2=s.setlist.front();
-      ListNode tmp;
-      while (n1.isValidNode()&&n2.isValidNode()){
-        if (((Comparable)(n2.item())).compareTo((Comparable)(n1.item()))<0){
-            n2=n2.next();
+      while(a.isValidNode()){
+        if(b.isValidNode()){
+          if(((Comparable)a.item()).compareTo(b.item())>0){
+            b=b.next();
+          }else{
+            if(((Comparable)a.item()).compareTo(b.item())==0){
+            b=b.next();
+            a=a.next();
+            }else{
+              current=a.next();
+              a.remove();
+              a=current;  
+            }
           }
-        else if (((Comparable)(n2.item())).compareTo((Comparable)(n1.item()))==0){
-          n1=n1.next();
-          n2=n2.next();
+        }else{
+          current=a.next();
+          a.remove();
+          a=current;
         }
-        else{
-          tmp=n1.next();
-          n1.remove();
-          n1=tmp;
-        }
-
       }
-    }
-    catch(InvalidNodeException ivn){
-     
+
+    }catch (InvalidNodeException i){
+      i.printStackTrace();
     }
   }
 
@@ -194,25 +200,19 @@ public class Set {
    **/
   public String toString() {
     // Replace the following line with your solution.
-     String result = "[  ";
+    ListNode head=set.front();
+    String s="[";
     try{
-     
-      List l=this.setlist;
-    ListNode current = l.front();
-    while (current != null) {
-      result = result + current.item() + "  ";
-      current = current.next();
-    }
-    }
-
-    catch(InvalidNodeException ivn){
-
-      
-    }
-    finally{
-      return result + "]";
+      while(head.isValidNode()){
+      s=s+head.item()+" ";
+      head=head.next();
+      }
+      s=s+"]";  
+    }catch(InvalidNodeException i){
+      i.printStackTrace();
     }
     
+    return s;
   }
 
   public static void main(String[] argv) {
@@ -220,19 +220,28 @@ public class Set {
     s.insert(new Integer(3));
     s.insert(new Integer(4));
     s.insert(new Integer(3));
-    System.out.println("Set s = " + s.toString());
+    s.insert(new Integer(5));
+    s.insert(new Integer(10));
+    System.out.println("Set s = " + s);
+    System.out.println("s.cardinality() = " + s.cardinality());
 
     Set s2 = new Set();
-    s2.insert(new Integer(4));
+    s2.insert(new Integer(1));
+    s2.insert(new Integer(2));
     s2.insert(new Integer(5));
-    s2.insert(new Integer(5));
-    System.out.println("Set s2 = " + s2.toString());
+    s2.insert(new Integer(6));
+    s2.insert(new Integer(7));
+    s2.insert(new Integer(10));
+    s2.insert(new Integer(12));
+    System.out.println("Set s2 = " + s2);
+    System.out.println("s2.cardinality() = " + s2.cardinality());
 
     Set s3 = new Set();
     s3.insert(new Integer(5));
     s3.insert(new Integer(3));
     s3.insert(new Integer(8));
-    System.out.println("Set s3 = " + s3.toString());
+    System.out.println("Set s3 = " + s3);
+    System.out.println("s.cardinality() = " + s3.cardinality());
 
     s.union(s2);
     System.out.println("After s.union(s2), s = " + s);

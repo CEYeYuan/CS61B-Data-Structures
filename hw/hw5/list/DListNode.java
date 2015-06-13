@@ -91,16 +91,21 @@ public class DListNode extends ListNode {
    */
   public void insertAfter(Object item) throws InvalidNodeException {
     if (!isValidNode()) {
-      throw new InvalidNodeException("prev() called on invalid node");
+      throw new InvalidNodeException("insertAfter() called on invalid node");
     }
-   
-      next.prev=((DList)myList).newNode(item, (DList)myList,prev, next);
-      next=next.prev;
     // Your solution here.  Will look something like your Homework 4 solution,
     //   but changes are necessary.  For instance, there is no need to check if
     //   "this" is null.  Remember that this node's "myList" field tells you
     //   what DList it's in.  You should use myList.newNode() to create the
     //   new node.
+    else{
+    	 DListNode insert=new DListNode(item,(DList)myList,this,this.next);
+      next.prev=insert;
+      next=insert;
+       myList.size++;
+    }
+     
+    
   }
 
   /**
@@ -112,20 +117,23 @@ public class DListNode extends ListNode {
    *
    *  Performance:  runs in O(1) time.
    */
-  public void insertBefore(Object item) throws InvalidNodeException  {
+  public void insertBefore(Object item) throws InvalidNodeException {
     if (!isValidNode()) {
-      throw new InvalidNodeException("prev() called on invalid node");
+      throw new InvalidNodeException("insertBefore() called on invalid node");
     }
-   
     // Your solution here.  Will look something like your Homework 4 solution,
     //   but changes are necessary.  For instance, there is no need to check if
     //   "this" is null.  Remember that this node's "myList" field tells you
     //   what DList it's in.  You should use myList.newNode() to create the
     //   new node.
-   
-      prev.next=((DList)myList).newNode(item,(DList)myList,prev,this);
-      prev=prev.next;
-    
+    else{
+    	DListNode insert=new DListNode(item,(DList)myList,prev,this);
+      prev.next=insert;
+      prev=insert;
+       myList.size++;
+    }
+      
+
   }
 
   /**
@@ -145,17 +153,18 @@ public class DListNode extends ListNode {
     //   "this" is null.  Remember that this node's "myList" field tells you
     //   what DList it's in.
     else{
-      prev.next=next;
-      next.prev=prev;
-    
-
-
+    prev.next=next;
+    next.prev=prev;
+     myList.size--;
 
     // Make this node an invalid node, so it cannot be used to corrupt myList.
     myList = null;
     // Set other references to null to improve garbage collection.
     next = null;
-    prev = null;}
+    prev = null;
+    }
+
+  
   }
 
 }

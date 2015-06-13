@@ -60,9 +60,14 @@ public class SList extends List {
    *  Performance:  runs in O(1) time.
    **/
   public void insertFront(Object item) {
-    head = newNode(item, head);
-    if (size == 0) {
-      tail = head;
+    if(head==null){
+        head = newNode(item, head);
+        tail=head;
+    }
+    else{
+      SListNode newHead = newNode(item, head);
+      newHead.next=head;
+      head=newHead;
     }
     size++;
   }
