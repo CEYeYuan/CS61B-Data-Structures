@@ -102,6 +102,146 @@ public class Tree234 extends IntDictionary {
    **/
   public void insert(int key) {
     // Fill in your solution here.
+    if(find(key))
+      return;
+    else{
+      size++;
+      Tree234Node node=root;
+      if(root==null){
+          root=new Tree234Node(null,key);
+          node=root;
+          return;
+      } 
+
+      while (true) {
+         
+        if(node.keys==3&&node==root){
+            Tree234Node newRoot=new Tree234Node(null,root.key2);
+            Tree234Node leftchild=new Tree234Node(newRoot,root.key1);
+            Tree234Node rightchild=new Tree234Node(newRoot,root.key3);
+            newRoot.child1=leftchild;
+            newRoot.child2=rightchild;
+            newRoot.keys=1;
+            leftchild.child1=node.child1;
+            leftchild.child2=node.child2;
+            rightchild.child1=node.child3;
+            rightchild.child2=node.child4;
+            root=newRoot;
+            node=root;
+          
+          }
+        else if(node.keys==3){
+          Tree234Node pr=node.parent;
+          pr.keys++;
+
+          //if the node is the first child of it's parents
+          if(node==node.parent.child1){
+            int buffer1=pr.key1;
+            int buffer2=pr.key2;
+            pr.key1=node.key2;
+            pr.key2=buffer1;
+            if(pr.keys==3)
+              pr.key3=buffer2;
+            Tree234Node leftchild=new Tree234Node(pr,node.key1);
+            Tree234Node rightchild=new Tree234Node(pr,node.key3);
+            leftchild.child1=node.child1;
+            leftchild.child2=node.child2;
+            rightchild.child1=node.child3;
+            rightchild.child2=node.child4;
+            Tree234Node ch1=pr.child1;
+            Tree234Node ch2=pr.child2;
+            Tree234Node ch3=pr.child3;
+            pr.child1=leftchild;
+            pr.child2=rightchild;
+            pr.child3=ch2;
+            if(pr.keys==3)
+              pr.child4=ch3;
+          }
+
+           //if the node is the second child of it's parents
+           if(node==node.parent.child2){
+            int buffer1=pr.key1;
+            int buffer2=pr.key2;
+            pr.key2=node.key2;   
+            if(pr.keys==3)
+               pr.key3=buffer2;
+            Tree234Node leftchild=new Tree234Node(pr,node.key1);
+            Tree234Node rightchild=new Tree234Node(pr,node.key3);
+            leftchild.child1=node.child1;
+            leftchild.child2=node.child2;
+            rightchild.child1=node.child3;
+            rightchild.child2=node.child4;
+            Tree234Node ch1=pr.child1;
+            Tree234Node ch2=pr.child2;
+            Tree234Node ch3=pr.child3;
+            pr.child2=leftchild;
+            pr.child3=rightchild;
+            if(pr.keys==3)
+              pr.child4=ch3;
+          }
+
+           //if the node is the third child of it's parents
+           if(node==node.parent.child3){
+            pr.key3=node.key2;   
+            Tree234Node leftchild=new Tree234Node(pr,node.key1);
+            Tree234Node rightchild=new Tree234Node(pr,node.key3);
+            leftchild.child1=node.child1;
+            leftchild.child2=node.child2;
+            rightchild.child1=node.child3;
+            rightchild.child2=node.child4;
+            Tree234Node ch1=pr.child1;
+            Tree234Node ch2=pr.child2;
+            Tree234Node ch3=pr.child3;
+            pr.child3=leftchild;
+            pr.child4=rightchild;
+          }
+          node=node.parent;
+        }
+
+        if(node.child1==null&&node.child2==null&&node.child3==null&&node.child4==null){
+            node.keys++;
+            int buffer1=node.key1;
+            int buffer2=node.key2;
+            if(node.keys==2){
+              if(key>buffer1){
+                node.key2=key;
+              }else{
+                node.key1=key;
+                node.key2=buffer1;
+              }
+            }
+            else{
+              if(key<buffer1){
+                node.key1=key;
+                node.key2=buffer1;
+                node.key3=buffer2;
+              }
+              else if(key>buffer1&&key<buffer2){
+                node.key2=key;
+                node.key3=buffer2;
+              }else{
+                node.key3=key;
+              }
+         }
+          break;
+      }
+       else if (key < node.key1) {
+          node = node.child1; 
+        } else if ((node.keys == 1) || (key < node.key2)) {
+          node = node.child2;
+        } 
+         else if ((node.keys == 2) || (key < node.key3)) {
+          node = node.child3;
+        } 
+         else {
+          node = node.child4;
+       }
+       
+    }
+    
+    
+    return;
+    }
   }
 
 
