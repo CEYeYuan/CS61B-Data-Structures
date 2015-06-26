@@ -1,5 +1,4 @@
 /* UDGraph.java */
-
 import java.io.*;
 import java.util.*;
 
@@ -115,6 +114,21 @@ public class UDGraph
   public UDGraph length2Paths() {
     UDGraph newGraph = new UDGraph(vertices);
     // Put your answer to Part I here.
+    for(int i=0;i<vertices;i++){
+    	for(int j=0;j<vertices;j++)
+    	{
+    		if(adjMatrix[i][j]){
+    			for(int k=0;k<vertices;k++){
+    				if(adjMatrix[j][k]){
+    					if(!newGraph.adjMatrix[i][k]){
+    						newGraph.adjMatrix[i][k]=true;
+    						newGraph.edges+=1;
+    					}
+    				}
+    			}
+    		}
+    	}
+    }
     return newGraph;
   }
 
@@ -128,6 +142,32 @@ public class UDGraph
   public UDGraph paths(int length) {
     UDGraph newGraph = new UDGraph(vertices);
     // Put your answer to Part II here.
+    if(length==1){
+    	for(int i=0;i<vertices;i++){
+    		for (int j=0;j<vertices;j++){
+    			if(adjMatrix[i][j]){
+    				newGraph.adjMatrix[i][j]=true;
+    				newGraph.edges+=1;
+    			}
+    		}
+    	}
+    }else{
+    	UDGraph graph=paths(length-1);
+    	for(int i=0;i<vertices;i++){
+    		for(int j=0;j<vertices;j++){
+    			if(graph.adjMatrix[i][j]){
+    				for(int k=0;k<vertices;k++){
+    					if(adjMatrix[j][k]){    					
+		    					if(!newGraph.adjMatrix[i][k]){
+		    						newGraph.adjMatrix[i][k]=true;
+		    						newGraph.edges+=1;
+		    					}
+    					}
+    				}
+    			}
+    		}
+    	}
+    }
     return newGraph;
   }
 
