@@ -77,9 +77,53 @@ public class Maze {
      * integer.  randInt() generates different numbers every time the program
      * is run, so that you can make lots of different mazes.
      **/
+    DisjointSets set=new DisjointSets(horiz*vert);
+    int[] allwall=new int[horiz*(vert - 1)+(horiz-1)*vert];
+    for (i=0;i<horiz*(vert - 1)+(horiz-1)*vert;i++){
+    	allwall[i]=i;
+    }
+    /*
+    allwall[0]-allwall[horiz*(vert - 1)-1] represent hwalls index=h*(vert-1)+v
+    allwall[horiz*(vert - 1)]-allwall[horiz*(vert - 1)+(horiz-1)*vert] represent vwalls
+    */
+    for(i=allwall.length;i>=1;i--){
+    	int index=randInt(i);
+    	int rand=allwall[index];
+    	swap(allwall,index,i-1);
+    	if(rand<=horiz*(vert - 1)-1){
+    		int h,v;
+    		v=rand%(vert - 1);
+    		h=rand/(vert - 1);
+    		//find(h,v)  find(h,v+1)
+    		if(set.find(v*horiz+h)!=set.find((v+1)*horiz+h)){
+    			hWalls[h][v]=false;
+    			set.union(set.find(v*horiz+h),set.find((v+1)*horiz+h));
+    		}
+
+    	}else{
+    		rand-=horiz*(vert - 1);
+    		int h,v;
+    		h=rand%(horiz - 1);
+    		v=rand/(horiz - 1);
+    		//find(h,v)  find(h+1,v)
+    		if(set.find(v*horiz+h)!=set.find(v*horiz+h+1)){
+    			vWalls[h][v]=false;
+    			set.union(set.find(v*horiz+h),set.find(v*horiz+h+1));
+    		}
+    	}
+    }
+  
+	
 
 
 
+
+  }
+
+  private void swap(int[] input,int i,int j){
+  	int num=input[i];
+  	input[i]=input[j];
+  	input[j]=num;
   }
 
   /**
