@@ -29,12 +29,9 @@ public class Sorts {
     int[] result=new int[keys.length];
     int[] arr=new int[16];
     int mask=15;
-    int denom=1;
-    for(int i=0;i<whichDigit;i++){
-      denom*=16;  
-      }
+    int shift=4*whichDigit;
     for(int i=0;i<keys.length;i++){
-      arr[(keys[i]/denom)&mask]++;
+      arr[(keys[i]>>shift)&mask]++;
     }
     int total=0;
     for(int i=0;i<arr.length;i++){
@@ -43,8 +40,9 @@ public class Sorts {
       total+=current;
     }
     for(int i=0;i<keys.length;i++){
-      int index=arr[(keys[i]/denom)&mask];
-      arr[(keys[i]/denom)&mask]++;
+      int buffer=keys[i];
+      int index=arr[(keys[i]>>shift)&mask];
+      arr[(keys[i]>>shift)&mask]++;
       result[index]=keys[i];
     }
     return result;
